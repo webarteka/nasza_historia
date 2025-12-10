@@ -5,54 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Otylka | Sto lat!</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
-
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✈️</text></svg>">
 
     <style>
+        /* --- KONFIGURACJA KOLORÓW --- */
         :root {
-            --bg-color: #fdfbf7;
-            --text-color: #333;
-            --accent-color: #d4a5a5;
-            --accent-hover: #c08e8e; /* Ciemniejszy róż dla efektu */
-            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #f0f0f0;
+            --text-muted: #aaaaaa;
+            --accent-color: #ffb7b2; /* Bardziej romantyczny róż */
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- RESET I BAZA --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Lato', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             overflow-x: hidden;
         }
 
+        /* --- ZJAWISKOWY HERO SECTION --- */
         header {
             height: 100vh;
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 2rem;
+            overflow: hidden;
+            /* Głęboki gradient w tle */
+            background: radial-gradient(circle at center, #2a1a1a 0%, #000000 100%);
+        }
+
+        /* Kontener na świetliki */
+        .fireflies {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1; /* Za tekstem */
+            pointer-events: none;
+        }
+
+        .firefly {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+            animation: fly 10s infinite linear;
+        }
+
+        /* Ramka na główne zdjęcie */
+        .hero-photo-container {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+            width: 250px;
+            height: 350px;
+            /* Efekt lewitowania */
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 4px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            /* Delikatny obrót */
+            transform: rotate(-3deg);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-photo-container:hover .hero-photo {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        /* Teksty */
+        .header-content {
+            position: relative;
+            z-index: 2;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            color: #2c2c2c;
-            margin-bottom: 1rem;
+            font-size: 4.5rem;
+            background: linear-gradient(to right, #fff, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
             animation: fadeInDown 1.5s ease forwards;
+            line-height: 1.1;
         }
 
         p.subtitle {
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            color: #666;
+            font-size: 1.1rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
             text-transform: uppercase;
             animation: fadeInUp 1.5s ease forwards 0.5s;
             opacity: 0;
@@ -64,45 +124,39 @@
             font-size: 2rem;
             color: var(--accent-color);
             animation: bounce 2s infinite;
+            z-index: 2;
+            cursor: pointer;
+            opacity: 0.7;
         }
 
-        /* --- NOWY UKŁAD GALERII (Flexbox) --- */
+        /* --- GALERIA MASONRY --- */
         .gallery-wrapper {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             display: flex;
-            gap: 20px; /* Odstęp między kolumnami */
+            gap: 20px;
             justify-content: center;
         }
 
-        /* Kolumna wewnątrz galerii */
         .gallery-column {
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Odstęp między zdjęciami w pionie */
+            gap: 20px;
             flex: 1;
-            max-width: 100%; /* Zapobiega rozpychaniu */
+            max-width: 100%;
         }
 
-        /* --- ZMIANA: Nowy, bardziej złożony styl karty --- */
         .photo-card {
             position: relative;
-            border-radius: 12px; /* Nieco większe zaokrąglenie */
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow);
-            background: #e0e0e0;
-
-            /* Stan początkowy (przed pojawieniem się) */
+            background: var(--card-bg);
             opacity: 0;
-            /* Startujemy niżej, mniejsi i rozmyci */
             transform: translateY(80px) scale(0.9);
-            filter: blur(10px) grayscale(50%); /* Dodano rozmycie i lekką szarość */
-
-            /* Płynna, sprężysta animacja (OutExpo) */
+            filter: blur(10px) grayscale(50%);
             transition: all 0.9s cubic-bezier(0.19, 1, 0.22, 1);
-
-            /* Zapobiega miganiu na niektórych przeglądarkach */
             will-change: transform, opacity, filter;
         }
 
@@ -110,58 +164,28 @@
             width: 100%;
             display: block;
             height: auto;
-            /* Zdjęcie też ma oddzielną tranzycję dla efektu zoom */
-            transition: transform 1.4s ease;
+            transition: transform 0.7s ease, opacity 0.3s ease;
+            opacity: 0.8;
         }
 
-        /* --- ZMIANA: Stan widoczny (po przewinięciu) --- */
-        .photo-card.visible {
-            opacity: 1;
-            transform: translateY(0) scale(1); /* Wracamy do normy */
-            filter: blur(0) grayscale(0%); /* Obraz staje się ostry i kolorowy */
-        }
+        .photo-card.visible { opacity: 1; transform: translateY(0) scale(1); filter: blur(0) grayscale(0%); }
+        .photo-card:hover {box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1); z-index: 1; }
+        .photo-card:hover img { transform: scale(1.05); opacity: 1; }
+        .photo-card img.error { padding: 40px 10px; background: #2a1a1a; color: #ff6b6b; text-align: center; font-size: 12px; min-height: 100px; }
 
-        /* --- ZMIANA: Efekt Hover (najazd myszką) --- */
-        .photo-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3); /* Głębszy cień */
-        }
-
-        .photo-card:hover img {
-            transform: scale(1.1); /* Zoom zdjęcia wewnątrz ramki */
-        }
-
-        /* Styl błędu (gdy zdjęcie się nie wczyta) */
-        .photo-card img.error {
-            padding: 40px 10px;
-            background: #ffecec;
-            color: red;
-            text-align: center;
-            font-size: 12px;
-            min-height: 100px;
-        }
-        .photo-card img.error::before {
-            content: "Brak pliku: ";
-            font-weight: bold;
-        }
-
-        /* --- NOWA, DOPRACOWANA STOPKA I PRZYCISK --- */
+        /* --- STOPKA I BILET --- */
         footer {
             text-align: center;
             padding: 6rem 1rem 8rem 1rem;
-            color: #888;
+            color: var(--text-muted);
             font-family: 'Playfair Display', serif;
             font-size: 0.8rem;
             position: relative;
-            overflow: hidden; /* Ważne dla animacji wylatujących poza */
+            overflow: hidden;
         }
 
-        .ticket-container {
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 10;
-        }
+        .ticket-container { margin-bottom: 2rem; position: relative; z-index: 10; }
 
-        /* Stylizacja przycisku */
         .ticket-btn {
             position: relative;
             display: inline-flex;
@@ -171,21 +195,16 @@
             padding: 16px 45px;
             font-size: 1.2rem;
             letter-spacing: 1px;
-            color: var(--text-color);
-            background: white;
+            color: var(--accent-color);
+            background: #2a2a2a;
             text-decoration: none;
-
-            /* Wygląd biletu */
             border: 2px dashed var(--accent-color);
             border-radius: 50px;
-
-            /* Cień i przejścia */
-            box-shadow: 0 5px 20px rgba(212, 165, 165, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
             transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            overflow: hidden; /* Ukrywa efekt połysku wychodzący poza */
+            overflow: hidden;
         }
 
-        /* EFEKT POŁYSKU (Shine Effect) */
         .ticket-btn::after {
             content: '';
             position: absolute;
@@ -193,98 +212,54 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.8),
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: 0.5s;
             transform: skewX(-20deg);
         }
 
-        /* IKONA SAMOLOTU */
-        .plane-icon {
-            display: inline-block;
-            font-size: 1.4rem;
-            /* To sprawia, że ruch jest sprężysty i naturalny */
-            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .plane-icon { display: inline-block; font-size: 1.4rem; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .ticket-btn:hover { background-color: var(--accent-color); color: #121212; border-color: transparent; box-shadow: 0 0 30px rgba(230, 179, 179, 0.4); transform: translateY(-3px); }
+        .ticket-btn:hover::after { left: 150%; transition: 0.7s ease-in-out; }
+        .ticket-btn:hover .plane-icon { transform: translate(120px, -80px) scale(0.4) rotate(-30deg); opacity: 0; transition: transform 1s cubic-bezier(0.5, 0, 0, 1), opacity 0.8s ease-in 0.2s; }
+        .cta-text { font-style: italic; margin-bottom: 30px; font-size: 0.95rem; color: var(--text-muted); animation: fadeInDown 1s ease-out; }
+
+        /* --- ANIMACJE --- */
+        @keyframes fly {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100px, -200px) scale(1.5); opacity: 0; }
         }
 
-        /* --- STAN HOVER (Po najechaniu) --- */
-
-        .ticket-btn:hover {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: transparent; /* Ramka znika, zostaje kolor */
-            box-shadow: 0 15px 30px rgba(212, 165, 165, 0.6); /* Mocniejszy cień */
-            transform: translateY(-3px); /* Przycisk lekko się unosi */
-        }
-
-        /* Uruchomienie połysku */
-        .ticket-btn:hover::after {
-            left: 150%;
-            transition: 0.7s ease-in-out;
-        }
-
-        /* Animacja samolotu na hover */
-        .ticket-btn:hover .plane-icon {
-            /* translate: Przesuwa w prawo i do góry
-               scale: Zmniejsza (efekt oddalania)
-               rotate: Obraca dziób do góry
-            */
-            transform: translate(120px, -80px) scale(0.4) rotate(-30deg);
-            opacity: 0; /* Znikanie na końcu lotu */
-            transition: transform 1s cubic-bezier(0.5, 0, 0, 1), opacity 0.8s ease-in 0.2s;
-        }
-
-        /* Opcjonalnie: Tekst zachęty */
-        .cta-text {
-            font-style: italic;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
-            color: #555;
-            animation: fadeInDown 1s ease-out;
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-3deg); }
+            50% { transform: translateY(-15px) rotate(-3deg); }
+            100% { transform: translateY(0px) rotate(-3deg); }
         }
 
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        /* Animacja pulsowania przycisku */
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 5px 15px rgba(212, 165, 165, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 10px 25px rgba(212, 165, 165, 0.5); }
-            100% { transform: scale(1); box-shadow: 0 5px 15px rgba(212, 165, 165, 0.3); }
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
-        }
-
-        /* Responsywność kolumn */
-        @media (max-width: 900px) {
-            h1 { font-size: 3rem; }
-            .gallery-wrapper {
-                padding: 5px;
-                gap: 8px;
-            }
-            .gallery-column {
-                gap: 8px;
-            }
-        }
-        @media (max-width: 600px) {
-            h1 { font-size: 2.5rem; }
-        }
+        @media (max-width: 900px) { h1 { font-size: 3rem; } .gallery-wrapper { padding: 5px; gap: 8px; } .gallery-column { gap: 8px; } }
+        @media (max-width: 600px) { h1 { font-size: 2.5rem; } .hero-photo-container { width: 200px; height: 280px; } }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Otylka & Bartek</h1>
-        <p class="subtitle">Nasza Historia</p>
-        <div class="scroll-indicator">↓</div>
+        <div class="fireflies" id="fireflies"></div>
+
+        <div class="hero-photo-container">
+            <img src="img/DSC06777.jpg" alt="Nasze zdjęcie" class="hero-photo">
+        </div>
+
+        <div class="header-content">
+            <h1>Otylka & Bartek</h1>
+            <p class="subtitle">Nasza Historia</p>
+        </div>
+
+        <div class="scroll-indicator" onclick="document.getElementById('gallery-wrapper').scrollIntoView({behavior: 'smooth'})">↓</div>
     </header>
 
     <div class="gallery-wrapper" id="gallery-wrapper">
@@ -293,7 +268,6 @@
     <footer>
         <div class="ticket-container">
             <p class="cta-text">Gotowa na naszą kolejną przygodę?</p>
-
             <a href="wizzair rezerwacja.pdf" class="ticket-btn" target="_blank">
                 <span class="plane-icon">✈️</span>
                 BARCELONA
@@ -302,31 +276,47 @@
     </footer>
 
     <script>
-        // --- KONFIGURACJA ---
-        const folderPath = 'img/'; // Upewnij się, że masz folder "zdjecia"
+        // --- 1. GENEROWANIE ŚWIETLIKÓW ---
+        const fireflyContainer = document.getElementById('fireflies');
+        const fireflyCount = 40; // Liczba świetlików
 
+        for (let i = 0; i < fireflyCount; i++) {
+            const firefly = document.createElement('div');
+            firefly.classList.add('firefly');
+
+            // Losowa pozycja startowa
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+
+            // Losowy czas animacji i opóźnienie
+            const duration = 5 + Math.random() * 10;
+            const delay = Math.random() * 5;
+
+            firefly.style.left = x + '%';
+            firefly.style.top = y + '%';
+            firefly.style.animationDuration = duration + 's';
+            firefly.style.animationDelay = delay + 's';
+
+            fireflyContainer.appendChild(firefly);
+        }
+
+        // --- 2. GALERIA (Standardowy kod) ---
+        const folderPath = 'img/';
         const imageFiles = [
             "IMG_4448.jpg", "IMG_4706.jpg", "IMG_4729.jpg", "IMG_4735.jpg", "IMG_4762.jpg", "IMG_4865.jpg", "IMG_4885.jpg", "r649.jpg", "IMG_5017.jpg", "IMG_5033.jpg", "IMG_5068.jpg", "IMG_5076.jpg", "IMG_5135.jpg", "IMG_5188.jpg", "IMG_5192.jpg", "IMG_5204.jpg", "IMG_5221.jpg", "IMG_5238.png", "IMG_5345.jpeg", "att.dvDsa62I_jng_Ky7gTIgLbXNgB_FT9hW1LxEBFqBFoI.jpg", "IMG_5454.jpg", "att.pBRrQoqYvIdL1K5ET_-EMWhvQvxk98pBU_jXeTN7lY4.jpg", "att.bRGTXkJA-P9KCWKwpscO5pLM_riN3JPNAPA2ftcUTgo.jpg", "09CCFD9F-330B-461E-8C2F-07E876ACE86C.png", "att.z1ROWZU1Su6zqopYXn_pSIYYNbZc0FiZXZp-U1L2p6k.jpg", "IMG_5642.jpg", "IMG_5657.jpeg", "IMG_5760.jpg", "IMG_5782.jpg", "IMG_5812.jpg", "att.kM4VQNAUTywlV31_oNogfDp0tdjgwKCB_bW2avbdvGc.jpg", "att.psZWvGpI2YPirzhjm6NIEomsUHrIB-EP9bBgpeg8stk.jpg", "att.0B23xTmSLidgawjAmd8XhfL5bXhDYg7Hf5ZUjBm35lU.jpg", "DSC06696.jpg", "DSC06709.jpg", "DSC06716.jpg", "DSC06739.jpg", "DSC06765.jpg", "IMG_5916.jpeg", "att.7-G8o0FIXBIbtEY12t5fd3Q1TA9Nnv0V2-VtHrLqkw4.jpg", "DSC06777.jpg", "DSC06801.jpg", "DSC06804.jpg", "DSC06806.jpg", "att.PYgmVOfF0wz4H12bLtloKa973h4QgmO4i88IVPZYnpQ.jpg", "att.tRAYb1mxtBb3FevE2J03OIq2Spk7ZKjthGThgRrUbL0.jpg", "att.xyDktVFbcviaK7wTBaSIrqyIpG8WN2yH7FZv7TDPoZA.jpg", "att.r3jey4I2G2eyTM8lLsp5aHU52sZaccIakuFAnQaVjEc.jpg", "DSC06811.jpg", "IMG_6028.jpg", "IMG_6034.jpg", "fc4dfbf8f6d5acb479cea541a06c92f6.jpeg", "IMG_6235.jpg", "DSC06855.jpg", "DSC06859.jpg", "DSC06865.jpg", "IMG_6264.jpg", "DSC06867.jpg", "DSC06884.jpg", "IMG_6586.jpg", "IMG_6616.jpg", "IMG_6795.jpg", "IMG_6807.jpg", "att.iXUBwn9iMHkKYreT0o6NxvZ6JbJUQcMTKdcuBjtNUBE.jpg", "att.YiqaxAsWgv99pOjBG0ezLlsqzCX-ZJxnfRteiAqxr5g.jpg", "att.XzEQ2AcGoyqnh643g8yuyKLAvwCmWHKceecfNckbmE4.jpg", "att.TL5FlHgGLJ_Gt_WATOEOfoajX2LRtBcSODf4Opn8hF0.jpg", "att.FRZRS4jZF2vbmCV380sX9VXAeuAI9iD0P02ymqqtseE.jpg", "IMG_7013.jpg", "IMG_7024.jpg", "9023E5DE-84FB-434C-8230-9708E58D3ED2.jpg", "695A1D8E-4893-4D7B-9319-837682DA2EA9.jpg", "att.J7Zv0Ab5TAKwbmHdqyYNfF8mLhRwL7l1I4yL0LU_vas.jpg", "IMG_7258.jpg", "IMG_7288.jpg", "IMG_7296.jpg", "IMG_7337.jpg", "IMG_7473.jpg", "IMG_7474.jpg", "IMG_0196.jpg"
         ];
 
-        // --- INICJALIZACJA ---
         const galleryWrapper = document.getElementById('gallery-wrapper');
 
-        // ZMIANA: Funkcja obliczająca liczbę kolumn
         function getColumnCount() {
-            if (window.innerWidth <= 400) {
-                return 1; // Dwie kolumny dla telefonów (<= 600px)
-            }else if (window.innerWidth <= 800) {
-                return 2;
-            }else {
-                return 3; // Trzy kolumny dla większych ekranów
-            }
+            if (window.innerWidth <= 400) { return 1; }
+            else if (window.innerWidth <= 800) { return 2; }
+            else { return 3; }
         }
 
         const numberOfColumns = getColumnCount();
         const columns = [];
 
-        // Tworzenie kolumn w HTML
         for (let i = 0; i < numberOfColumns; i++) {
             const col = document.createElement('div');
             col.className = 'gallery-column';
@@ -345,11 +335,8 @@
         }, observerOptions);
 
         imageFiles.forEach((filename, index) => {
-            // --- POPRAWKA: Najpierw tworzymy element! ---
             const card = document.createElement('div');
             card.className = 'photo-card';
-
-            // Dopiero teraz możemy go edytować
             card.style.transitionDelay = (Math.random() * 0.3).toFixed(2) + 's';
 
             const img = document.createElement('img');
@@ -363,13 +350,10 @@
             };
 
             card.appendChild(img);
-
             const columnIndex = index % numberOfColumns;
             columns[columnIndex].appendChild(card);
-
             observer.observe(card);
         });
-
     </script>
 </body>
 </html>
